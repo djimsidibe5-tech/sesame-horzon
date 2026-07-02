@@ -10,10 +10,18 @@ app = FastAPI(title="Sésame Horizon - Portail Officiel")
 app.mount("/static", StaticFiles(directory="sesame-tech/static"), name="static")
 templates = Jinja2Templates(directory="sesame-tech/templates")
 
-@app.get("/", response_class=HTMLResponse, name="index")
+@app.get("/", name="index")
 async def home(request: Request):
-    @app.get("/profil", response_class=HTMLResponse, name="profil")
-async def home(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/profil", name="profil")
+async def profil(request: Request):
+    return templates.TemplateResponse("profil.html", {"request": request})
+
+# Ajoute ici d'autres routes si tu en as (ex: pour matiere.html, niveau.html)
+@app.get("/matiere", name="matiere")
+async def matiere(request: Request):
+    return templates.TemplateResponse("matiere.html", {"request": request})
     # Données du créateur
     biographie = {
         "nom": "SIDIBE DJIM",
