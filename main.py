@@ -8,7 +8,7 @@ app = FastAPI(title="Sésame Horizon - Portail Officiel")
 
 # Montage des fichiers statiques et templates
 app.mount("/static", StaticFiles(directory="sesame-tech/static"), name="static")
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="sesame-tech/templates")
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
