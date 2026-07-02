@@ -9,9 +9,9 @@ Auteur : SIDIBÉ Djim
 
 import os
 from pathlib import Path
-from flask import Flask, render_template, abort
+from fastapi import Fastapi, render_template, abort
 
-app = Flask(__name__)
+app = Fastapi(__name__)
 
 BASE_DIR = Path(__file__).resolve().parent
 DOCS_DIR = BASE_DIR / "static" / "documents"
