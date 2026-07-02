@@ -129,4 +129,4 @@ async def telecharger(niveau: str, semestre: str, session: str, matiere: str, no
 @app.get("/ressources", name="ressources", response_class=HTMLResponse)
 async def ressources(request: Request):
     # Page regroupant Licence 1 à Master 2 et Concours Ingénieurs
-    return templates.TemplateResponse("ressources.html", {"request": request, "niveaux": NIVEAUX}
+    return templates.TemplateResponse("ressources.html", {"request": request, "niveaux": NIVEAUX})
