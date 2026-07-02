@@ -12,6 +12,8 @@ templates = Jinja2Templates(directory="sesame-tech/templates")
 
 @app.get("/", response_class=HTMLResponse, name="index")
 async def home(request: Request):
+    @app.get("/profil", response_class=HTMLResponse, name="profil")
+async def home(request: Request):
     # Données du créateur
     biographie = {
         "nom": "SIDIBE DJIM",
