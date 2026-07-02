@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block titre %}Sésame des Techno{% endblock %}</title>
+<meta name="description" content="Sésame des Techno — Bibliothèque des anciens sujets et corrigés en Sciences Physiques, de la Licence 1 au Master 2.">
+<link rel="icon" href="{{ url_for('static', filename='image/logo.svg') }}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="grain"></div>
+
+<header class="site-header">
+  <a class="brand" href="{{ url_for('index') }}">
+    <img src="{{ url_for('static', filename='image/logo.svg') }}" alt="" class="brand-mark">
+    <span class="brand-text">Sésame <em>des Techno</em></span>
+  </a>
+  <nav class="site-nav">
+    <a href="{{ url_for('index') }}">Bibliothèque</a>
+    <a href="{{ url_for('profil') }}">Profil</a>
+  </nav>
+</header>
+
+<main>
+{% block contenu %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <p>« Sésame, ouvre-toi » — ouvrir la porte des annales, une matière à la fois.</p>
+  <p class="footer-meta">Sésame des Techno &copy; {{ 2026 }} — Conçu par SIDIBÉ Djim, Université Polytechnique de Man</p>
+</footer>
+
+</body>
+</html>

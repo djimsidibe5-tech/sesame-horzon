@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block titre %}Sésame des Techno — Bibliothèque des annales{% endblock %}
+
+{% block contenu %}
+
+<section class="hero">
+  <p class="eyebrow">Bibliothèque académique · Sciences Physiques</p>
+  <h1>Prononce le bon niveau,<br>la porte des annales s'ouvre.</h1>
+  <p class="hero-text">
+    Sujets et corrigés classés par niveau, semestre et session — de la Licence 1
+    jusqu'au Master 2. Un seul endroit pour réviser, comparer et progresser.
+  </p>
+  <a href="#niveaux" class="bouton bouton-or">Explorer les niveaux ↓</a>
+</section>
+
+<section id="niveaux" class="niveaux">
+  <h2 class="titre-section"><span class="numero">01</span> Choisir un niveau</h2>
+  <div class="grille-niveaux">
+    {% for n in niveaux %}
+    <a class="carte-niveau" href="{{ url_for('niveau', niveau_slug=n.slug) }}">
+      <span class="carte-tampon">L{{ loop.index }}</span>
+      <h3>{{ n.nom }}</h3>
+      <p>{{ n.semestres | join(' · ') }}</p>
+      <span class="carte-fleche">→</span>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="mode-emploi">
+  <h2 class="titre-section"><span class="numero">02</span> Comment ça marche</h2>
+  <div class="grille-etapes">
+    <div class="etape">
+      <span class="etape-num">1</span>
+      <h4>Niveau</h4>
+      <p>Sélectionne ta classe, de la Licence 1 au Master 2.</p>
+    </div>
+    <div class="etape">
+      <span class="etape-num">2</span>
+      <h4>Semestre &amp; session</h4>
+      <p>Chaque semestre propose la Session 1 et la Session 2.</p>
+    </div>
+    <div class="etape">
+      <span class="etape-num">3</span>
+      <h4>Matière</h4>
+      <p>Ouvre la matière et télécharge sujet et corrigé.</p>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

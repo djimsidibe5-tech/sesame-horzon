@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block titre %}{{ matiere_nom }} — {{ niveau.nom }}{% endblock %}
+
+{% block contenu %}
+
+<section class="fil-ariane">
+  <a href="{{ url_for('index') }}">Bibliothèque</a> <span>/</span>
+  <a href="{{ url_for('niveau', niveau_slug=niveau.slug) }}">{{ niveau.nom }}</a> <span>/</span>
+  <span>{{ matiere_nom }}</span>
+</section>
+
+<section class="entete-matiere">
+  <p class="eyebrow">{{ niveau.nom }} · {{ semestre_slug | replace('-', ' ') | title }} · {{ session_slug | replace('-', ' ') | title }}</p>
+  <h1>{{ matiere_nom }}</h1>
+</section>
+
+<section class="liste-fichiers-section">
+  {% if fichiers %}
+    <ul class="liste-fichiers">
+      {% for f in fichiers %}
+      <li class="fichier">
+        <span class="fichier-tampon fichier-tampon--{{ 'corrige' if f.categorie == 'Corrigé' else 'sujet' }}">{{ f.categorie }}</span>
+        <span class="fichier-nom">{{ f.nom }}</span>
+        <a class="bouton bouton-fin" href="{{ f.url }}" download>Télécharger ↓</a>
+      </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="etat-vide-grand">
+      <p>Aucun document n'a encore été déposé pour cette matière.</p>
+      <p class="etat-vide-detail">
+        Ajoute des fichiers dans
+        <code>static/documents/{{ niveau.slug }}/{{ semestre_slug }}/{{ session_slug }}/{{ matiere_slug }}/</code>
+        pour qu'ils apparaissent automatiquement ici.
+      </p>
+    </div>
+  {% endif %}
+</section>
+
+{% endblock %}

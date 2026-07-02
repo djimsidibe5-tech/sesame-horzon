@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block titre %}Profil — SIDIBÉ Djim{% endblock %}
+
+{% block contenu %}
+
+<section class="fil-ariane">
+  <a href="{{ url_for('index') }}">Bibliothèque</a> <span>/</span> <span>Profil</span>
+</section>
+
+<section class="profil">
+  <div class="profil-media">
+    <div class="profil-photo">
+      <img src="{{ url_for('static', filename='image/photo-profil.jpg') }}" alt="Photo de SIDIBÉ Djim" onerror="this.style.display='none'; this.parentElement.classList.add('profil-photo--vide');">
+      <span class="profil-photo-vide-texte">Ajoute ta photo dans<br><code>static/image/photo-profil.jpg</code></span>
+    </div>
+  </div>
+
+  <div class="profil-contenu">
+    <p class="eyebrow">Fondateur de Sésame des Techno</p>
+    <h1>SIDIBÉ Djim</h1>
+    <p class="profil-tagline">Étudiant ivoirien · Licence 3 Sciences Physiques · Université Polytechnique de Man</p>
+
+    <div class="profil-bio">
+      <p>
+        Djim est étudiant en Licence 3 Sciences Physiques à l'Université Polytechnique
+        de Man, en Côte d'Ivoire. Passionné d'informatique, il a conçu Sésame des Techno
+        pour rassembler en un seul endroit les anciens sujets et corrigés dont chaque
+        étudiant en physique a besoin pour réviser sereinement.
+      </p>
+      <p>
+        Son parcours académique a débuté au Lycée Mixte 1 de Yamoussoukro, où il a suivi
+        la série C et obtenu son Baccalauréat avec mention, avant de poursuivre ses études
+        supérieures en Sciences Physiques.
+      </p>
+    </div>
+
+    <div class="profil-grille-infos">
+      <div class="info-bloc">
+        <span class="info-label">Parcours scolaire</span>
+        <span class="info-valeur">Lycée Mixte 1 de Yamoussoukro — Série C</span>
+      </div>
+      <div class="info-bloc">
+        <span class="info-label">Diplôme</span>
+        <span class="info-valeur">Baccalauréat, obtenu avec mention</span>
+      </div>
+      <div class="info-bloc">
+        <span class="info-label">Formation actuelle</span>
+        <span class="info-valeur">Licence 3 Sciences Physiques — UP Man</span>
+      </div>
+      <div class="info-bloc">
+        <span class="info-label">Passion</span>
+        <span class="info-valeur">Informatique &amp; développement web</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

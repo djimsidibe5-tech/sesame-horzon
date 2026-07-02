@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block titre %}{{ niveau.nom }} — Sésame des Techno{% endblock %}
+
+{% block contenu %}
+
+<section class="fil-ariane">
+  <a href="{{ url_for('index') }}">Bibliothèque</a> <span>/</span> <span>{{ niveau.nom }}</span>
+</section>
+
+<section class="entete-niveau">
+  <p class="eyebrow">Niveau</p>
+  <h1>{{ niveau.nom }} <span class="accent-physique">— Sciences Physiques</span></h1>
+</section>
+
+{% for semestre in semestres %}
+<section class="bloc-semestre">
+  <h2 class="titre-semestre">{{ semestre.nom }}</h2>
+
+  <div class="grille-sessions">
+    {% for session in semestre.sessions %}
+    <div class="bloc-session">
+      <h3 class="titre-session">{{ session.nom }}</h3>
+
+      {% if session.matieres %}
+        <ul class="liste-matieres">
+          {% for m in session.matieres %}
+          <li>
+            <a href="{{ url_for('matiere', niveau_slug=niveau.slug, semestre_slug=semestre.slug, session_slug=session.slug, matiere_slug=m.slug) }}">
+              <span class="matiere-nom">{{ m.nom }}</span>
+              <span class="matiere-nb">{{ m.nb_fichiers }} fichier{{ 's' if m.nb_fichiers != 1 else '' }}</span>
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="etat-vide">Aucune matière déposée pour l'instant dans cette session.</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endfor %}
+
+{% endblock %}
