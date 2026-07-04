@@ -22,11 +22,11 @@ class Niveau:
 
 
 NIVEAUX = [
-    Niveau("l1", "Licence 1", ["S1", "S2"]),
-    Niveau("l2", "Licence 2", ["S3", "S4"]),
-    Niveau("l3", "Licence 3", ["S5", "S6"]),
-    Niveau("m1", "Master 1", ["S1", "S2"]),
-    Niveau("m2", "Master 2", ["S3", "S4"]),
+    Niveau("L1", "Licence 1", ["S1", "S2"]),
+    Niveau("L2", "Licence 2", ["S3", "S4"]),
+    Niveau("L3", "Licence 3", ["S5", "S6"]),
+    Niveau("M1", "Master 1", ["S1", "S2"]),
+    Niveau("M2", "Master 2", ["S3", "S4"]),
 ]
 
 
