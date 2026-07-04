@@ -12,33 +12,33 @@
   <h1>{{ niveau.nom }} <span class="accent-physique">— Sciences Physiques</span></h1>
 </section>
 
-{% for semestre in semestres %}
+{% for semestre_nom, sessions in arbo.items() %}
 <section class="bloc-semestre">
-  <h2 class="titre-semestre">{{ semestre.nom }}</h2>
-
-  <div class="grille-sessions">
-    {% for session in semestre.sessions %}
-    <div class="bloc-session">
-      <h3 class="titre-session">{{ session.nom }}</h3>
-
-      {% if session.matieres %}
-        <ul class="liste-matieres">
-          {% for m in session.matieres %}
-          <li>
-            <a href="{{ url_for('matiere', niveau_slug=niveau.slug, semestre_slug=semestre.slug, session_slug=session.slug, matiere_slug=m.slug) }}">
-              <span class="matiere-nom">{{ m.nom }}</span>
-              <span class="matiere-nb">{{ m.nb_fichiers }} fichier{{ 's' if m.nb_fichiers != 1 else '' }}</span>
-            </a>
-          </li>
-          {% endfor %}
-        </ul>
-      {% else %}
-        <p class="etat-vide">Aucune matière déposée pour l'instant dans cette session.</p>
-      {% endif %}
+    <h2 class="titre-semestre">{{ semestre_nom }}</h2>
+    
+    <div class="grille-sessions">
+        {% for session_nom, matieres in sessions.items() %}
+        <div class="bloc-session">
+            <h3 class="titre-session">{{ session_nom }}</h3>
+            
+            {% if matieres %}
+            <ul class="liste-materes">
+                {% for m in matieres %}
+                <li>
+                    <a href="{{ url_for('matiere', niveau_slug=niveau.slug, semestre=semestre_nom, session=session_nom, matiere_nom=m.nom) }}">
+                        <span class="matiere-nom">{{ m.nom }}</span>
+                        <span class="matiere-nb">
+                            {{ m.fichiers|length }} fichier{{ 's' if m.fichiers|length != 1 else '' }}
+                        </span>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="etat-vide">Aucune matière déposée pour l'instant dans cette session.</p>
+            {% endif %}
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
-  </div>
 </section>
 {% endfor %}
-
-{% endblock %}
