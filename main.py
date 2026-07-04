@@ -96,26 +96,40 @@ async def page_niveau(request: Request, niveau_slug: str):
 
 
 # --- Page d'une matière (sujet + corrigé) ---
-@app.get("/matiere/{niveau_slug}/{semestre}/{session}/{matiere_nom}", name="matiere", response_class=HTMLResponse)
+@app.get( "/matiere/{niveau_slug}/{semestre}/{session}/{matiere_nom}", name="matiere",   response_class=HTMLResponse)
 async def matiere(request: Request, niveau_slug: str, semestre: str, session: str, matiere_nom: str):
     niveau = get_niveau_by_slug(niveau_slug)
-    chemin_matiere = DOCS_ROOT / niveau_slug / semestre / session / matiere_nom
+    chemin_matiere = DOCS_ROOT / niveau_slug / semestre / session / matiere_nom    
     fichiers = []
     if chemin_matiere.exists():
-        fichiers = [f.name for f in chemin_matiere.iterdir() if f.suffix == ".pdf"]
-
+        for f in chemin_matiere.iterdir():
+            if f.suffix == ".pdf":
+                # Correction du terme "corriq" en "corrig" pour plus de logique
+                categorie = "Corrigé" if "corrig" in f.name.lower() else "Sujet"
+                fichiers.append({
+                    "nom": f.name,
+                    "categorie": categorie,
+                    "url": request.url_for(
+                        "telecharger",
+                        niveau=niveau_slug,
+                        semestre=semestre,
+                        session=session,
+                        matiere=matiere_nom,
+                        nom_fichier=f.name,
+                    ),
+                })
+                
     return templates.TemplateResponse(
         "matiere.html",
         {
             "request": request,
             "niveau": niveau,
-            "semestre": semestre,
-            "session": session,
+            "semestre_slug": semestre,
+            "session_slug": session,
             "matiere_nom": matiere_nom,
             "fichiers": fichiers,
         },
     )
-
 
 # --- Téléchargement du PDF ---
 @app.get("/telecharger/{niveau}/{semestre}/{session}/{matiere}/{nom_fichier}", name="telecharger")
