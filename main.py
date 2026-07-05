@@ -87,6 +87,12 @@ async def page_niveau(request: Request, niveau_slug: str):
     niveau = get_niveau_by_slug(niveau_slug)
     if niveau is None:
         return templates.TemplateResponse("404.html", {"request": request}, status_code=404)
+@app.get("/confidentialite")
+async def confidentialite(request: Request):
+    return templates.TemplateResponse("confidentialite.html", {"request": request})
+@app.get("/apropos")
+async def apropos(request: Request):
+    return templates.TemplateResponse("apropos.html", {"request": request})
 
     arbo = scanner_arborescence(DOCS_ROOT / niveau_slug)
     return templates.TemplateResponse(
