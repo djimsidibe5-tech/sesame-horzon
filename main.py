@@ -10,7 +10,10 @@ app = FastAPI(title="Sésame Horizon - Portail Officiel")
 app.mount("/static", StaticFiles(directory="sesame-tech/static"), name="static")
 templates = Jinja2Templates(directory="sesame-tech/templates")
 
-DOCS_ROOT = Path("sesame-tech/static/documents")
+import os 
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parent
+DOCS_ROOT = BASE_DIR / "sesame-tech" / "static" / "documents"
 
 
 # --- Définition des niveaux (Licence 1 -> Master 2) ---
@@ -95,11 +98,7 @@ async def apropos(request: Request):
     return templates.TemplateResponse("apropos.html", {"request": request})
 
     arbo = scanner_arborescence(DOCS_ROOT / niveau_slug)
-    return templates.TemplateResponse(
-        "niveau.html",
-        {"request": request, "niveau": niveau, "arbo": arbo},
-    )
-
+    return templates.TemplateResponse( "niveau.html", {"request": request, "niveau": niveau, "arbo": arbo},  )
 
 # --- Page d'une matière (sujet + corrigé) ---
 @app.get( "/matiere/{niveau_slug}/{semestre}/{session}/{matiere_nom}", name="matiere",   response_class=HTMLResponse)
