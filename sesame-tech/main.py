@@ -1,161 +1,151 @@
-"""
-Sésame des Techno
-------------------
-Bibliothèque en ligne des anciens sujets et corrigés
-(Licence 1 -> Master 2, spécialité Sciences Physiques)
-
-Auteur : SIDIBÉ Djim
-"""
-
-import os
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from pathlib import Path
-from flask import Flask, render_template, abort
 
-app = Flask(__name__)
+app = FastAPI(title="Sésame Horizon - Portail Officiel")
 
+# Montage des fichiers statiques et templates
+app.mount("/static", StaticFiles(directory="sesame-tech/static"), name="static")
+templates = Jinja2Templates(directory="sesame-tech/templates")
+
+import os 
+from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
-DOCS_DIR = BASE_DIR / "static" / "documents"
+DOCS_ROOT = BASE_DIR / "sesame-tech" / "static" / "documents"
 
-# ---------------------------------------------------------------------------
-# Données de structure du site (niveaux -> semestres -> sessions -> matières)
-# ---------------------------------------------------------------------------
+
+# --- Définition des niveaux (Licence 1 -> Master 2) ---
+class Niveau:
+    def __init__(self, slug, nom, semestres):
+        self.slug = slug
+        self.nom = nom
+        self.semestres = semestres  # liste de strings, ex: ["S1", "S2"]
+
 
 NIVEAUX = [
-    {"nom": "Licence 1", "slug": "licence-1", "semestres": ["Semestre 1", "Semestre 2"]},
-    {"nom": "Licence 2", "slug": "licence-2", "semestres": ["Semestre 3", "Semestre 4"]},
-    {"nom": "Licence 3", "slug": "licence-3", "semestres": ["Semestre 5", "Semestre 6"]},
-    {"nom": "Master 1", "slug": "master-1", "semestres": ["Semestre 7", "Semestre 8"]},
-    {"nom": "Master 2", "slug": "master-2", "semestres": ["Semestre 9", "Semestre 10"]},
+    Niveau("L1", "Licence 1", ["S1", "S2"]),
+    Niveau("L2", "Licence 2", ["S3", "S4"]),
+    Niveau("L3", "Licence 3", ["S5", "S6"]),
+    Niveau("M1", "Master 1", ["S1", "S2"]),
+    Niveau("M2", "Master 2", ["S3", "S4"]),
 ]
 
-SESSIONS = ["Session 1", "Session 2"]
+
+def get_niveau_by_slug(slug):
+    return next((n for n in NIVEAUX if n.slug == slug), None)
 
 
-def slugify(texte: str) -> str:
-    """Transforme un texte en identifiant d'URL simple (sans accents/espaces)."""
-    remplacements = {
-        "é": "e", "è": "e", "ê": "e", "ë": "e",
-        "à": "a", "â": "a",
-        "î": "i", "ï": "i",
-        "ô": "o", "ö": "o",
-        "û": "u", "ù": "u", "ü": "u",
-        "ç": "c",
+def scanner_arborescence(chemin_niveau: Path):
+    """Scanne static/documents/<niveau>/ pour lister semestre -> session -> matieres."""
+    arbo = {}
+    if not chemin_niveau.exists():
+        return arbo
+    for semestre_dir in sorted(chemin_niveau.iterdir()):
+        if not semestre_dir.is_dir():
+            continue
+        arbo[semestre_dir.name] = {}
+        for session_dir in sorted(semestre_dir.iterdir()):
+            if not session_dir.is_dir():
+                continue
+            matieres = []
+            for matiere_dir in sorted(session_dir.iterdir()):
+                if matiere_dir.is_dir():
+                    fichiers = [f.name for f in matiere_dir.iterdir() if f.suffix == ".pdf"]
+                    matieres.append({"nom": matiere_dir.name, "fichiers": fichiers})
+            arbo[semestre_dir.name][session_dir.name] = matieres
+    return arbo
+
+
+# --- Données du créateur ---
+biographie = {
+    "nom": "SIDIBE DJIM",
+    "nationalite": "Ivoirien",
+    "niveau": "Licence 3 Sciences Physiques",
+    "parcours": "Baccalauréat Série C obtenu en 2024",
+    "description": "Étudiant passionné par la physique et le développement web, créateur de la plateforme Sésame Horizon pour soutenir les étudiants.",
+}
+
+
+@app.get("/", name="index", response_class=HTMLResponse)
+async def home(request: Request):
+    context = {
+        "request": request,
+        "title": "Sésame Horizon | Accueil",
+        "bio": biographie,
+        "niveaux": NIVEAUX,
     }
-    texte = texte.lower().strip()
-    for accent, lettre in remplacements.items():
-        texte = texte.replace(accent, lettre)
-    return texte.replace(" ", "-")
+    return templates.TemplateResponse("index.html", context)
 
 
-def get_niveau(slug: str):
-    for n in NIVEAUX:
-        if n["slug"] == slug:
-            return n
-    return None
+@app.get("/profil", name="profil", response_class=HTMLResponse)
+async def profil(request: Request):
+    return templates.TemplateResponse("profil.html", {"request": request, "bio": biographie})
 
 
-def lister_matieres(niveau_slug, semestre_slug, session_slug):
-    """Renvoie la liste des matières (dossiers) disponibles pour une session donnée."""
-    chemin = DOCS_DIR / niveau_slug / semestre_slug / session_slug
-    matieres = []
-    if chemin.exists():
-        for entree in sorted(chemin.iterdir()):
-            if entree.is_dir():
-                fichiers = [f for f in entree.iterdir() if f.is_file()]
-                matieres.append({
-                    "nom": entree.name.replace("-", " ").title(),
-                    "slug": entree.name,
-                    "nb_fichiers": len(fichiers),
-                })
-    return matieres
+# --- Page d'un niveau : liste semestres / sessions / matieres ---
+@app.get("/niveau/{niveau_slug}", name="niveau", response_class=HTMLResponse)
+async def page_niveau(request: Request, niveau_slug: str):
+    niveau = get_niveau_by_slug(niveau_slug)
+    if niveau is None:
+        return templates.TemplateResponse("404.html", {"request": request}, status_code=404)
+@app.get("/confidentialite")
+async def confidentialite(request: Request):
+    return templates.TemplateResponse("confidentialite.html", {"request": request})
+@app.get("/apropos")
+async def apropos(request: Request):
+    return templates.TemplateResponse("apropos.html", {"request": request})
 
+    arbo = scanner_arborescence(DOCS_ROOT / niveau_slug)
+    return templates.TemplateResponse( "niveau.html", {"request": request, "niveau": niveau, "arbo": arbo},  )
 
-def lister_fichiers(niveau_slug, semestre_slug, session_slug, matiere_slug):
-    """Renvoie la liste des fichiers (sujets/corrigés) d'une matière."""
-    chemin = DOCS_DIR / niveau_slug / semestre_slug / session_slug / matiere_slug
+# --- Page d'une matière (sujet + corrigé) ---
+@app.get( "/matiere/{niveau_slug}/{semestre}/{session}/{matiere_nom}", name="matiere",   response_class=HTMLResponse)
+async def matiere(request: Request, niveau_slug: str, semestre: str, session: str, matiere_nom: str):
+    niveau = get_niveau_by_slug(niveau_slug)
+    chemin_matiere = DOCS_ROOT / niveau_slug / semestre / session / matiere_nom    
     fichiers = []
-    if chemin.exists():
-        for f in sorted(chemin.iterdir()):
-            if f.is_file():
-                nom_bas = f.name.lower()
-                if "corrige" in nom_bas or "correction" in nom_bas:
-                    categorie = "Corrigé"
-                elif "sujet" in nom_bas or "epreuve" in nom_bas:
-                    categorie = "Sujet"
-                else:
-                    categorie = "Document"
-                url = f"/static/documents/{niveau_slug}/{semestre_slug}/{session_slug}/{matiere_slug}/{f.name}"
-                fichiers.append({"nom": f.name, "categorie": categorie, "url": url})
-    return fichiers
-
-
-# ---------------------------------------------------------------------------
-# Routes
-# ---------------------------------------------------------------------------
-
-@app.route("/")
-def index():
-    return render_template("index.html", niveaux=NIVEAUX)
-
-
-@app.route("/niveau/<niveau_slug>")
-def niveau(niveau_slug):
-    n = get_niveau(niveau_slug)
-    if not n:
-        abort(404)
-
-    semestres_data = []
-    for semestre in n["semestres"]:
-        semestre_slug = slugify(semestre)
-        sessions_data = []
-        for session in SESSIONS:
-            session_slug = slugify(session)
-            matieres = lister_matieres(niveau_slug, semestre_slug, session_slug)
-            sessions_data.append({
-                "nom": session,
-                "slug": session_slug,
-                "matieres": matieres,
-            })
-        semestres_data.append({
-            "nom": semestre,
-            "slug": semestre_slug,
-            "sessions": sessions_data,
-        })
-
-    return render_template("niveau.html", niveau=n, semestres=semestres_data)
-
-
-@app.route("/matiere/<niveau_slug>/<semestre_slug>/<session_slug>/<matiere_slug>")
-def matiere(niveau_slug, semestre_slug, session_slug, matiere_slug):
-    n = get_niveau(niveau_slug)
-    if not n:
-        abort(404)
-
-    fichiers = lister_fichiers(niveau_slug, semestre_slug, session_slug, matiere_slug)
-    matiere_nom = matiere_slug.replace("-", " ").title()
-
-    return render_template(
+    if chemin_matiere.exists():
+        for f in chemin_matiere.iterdir():
+            if f.suffix == ".pdf":
+                # Correction du terme "corriq" en "corrig" pour plus de logique
+                categorie = "Corrigé" if "corrig" in f.name.lower() else "Sujet"
+                fichiers.append({
+                    "nom": f.name,
+                    "categorie": categorie,
+                    "url": request.url_for(
+                        "telecharger",
+                        niveau=niveau_slug,
+                        semestre=semestre,
+                        session=session,
+                        matiere=matiere_nom,
+                        nom_fichier=f.name,
+                    ),
+                })
+                
+    return templates.TemplateResponse(
         "matiere.html",
-        niveau=n,
-        semestre_slug=semestre_slug,
-        session_slug=session_slug,
-        matiere_slug=matiere_slug,
-        matiere_nom=matiere_nom,
-        fichiers=fichiers,
+        {
+            "request": request,
+            "niveau": niveau,
+            "semestre_slug": semestre,
+            "session_slug": session,
+            "matiere_nom": matiere_nom,
+            "fichiers": fichiers,
+        },
     )
 
-
-@app.route("/profil")
-def profil():
-    return render_template("profil.html")
-
-
-@app.errorhandler(404)
-def page_non_trouvee(e):
-    return render_template("404.html"), 404
+# --- Téléchargement du PDF ---
+@app.get("/telecharger/{niveau}/{semestre}/{session}/{matiere}/{nom_fichier}", name="telecharger")
+async def telecharger(niveau: str, semestre: str, session: str, matiere: str, nom_fichier: str):
+    chemin_fichier = DOCS_ROOT / niveau / semestre / session / matiere / nom_fichier
+    if chemin_fichier.exists() and chemin_fichier.suffix == ".pdf":
+        return FileResponse(chemin_fichier, media_type="application/pdf", filename=nom_fichier)
+    return {"error": "Ce document n'existe pas encore."}
 
 
-if __name__ == "__main__":
-    # Crée le dossier de documents s'il n'existe pas encore
-    os.makedirs(DOCS_DIR, exist_ok=True)
-    app.run(debug=True)
+@app.get("/ressources", name="ressources", response_class=HTMLResponse)
+async def ressources(request: Request):
+    # Page regroupant Licence 1 à Master 2 et Concours Ingénieurs
+    return templates.TemplateResponse("ressources.html", {"request": request, "niveaux": NIVEAUX})
