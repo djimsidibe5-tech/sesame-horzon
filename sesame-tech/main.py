@@ -3,7 +3,6 @@ from fastapi.responses import HTMLResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pathlib import Path
-
 app = FastAPI(title="Sésame Horizon - Portail Officiel")
 
 # Montage des fichiers statiques et templates
