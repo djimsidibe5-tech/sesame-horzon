@@ -37,24 +37,24 @@ def get_niveau_by_slug(slug):
     return next((n for n in NIVEAUX if n.slug == slug), None)
 
 
-def scanner_arborescence(chemin_niveau: Path):
-    """Scanne static/documents/<niveau>/ pour lister semestre -> session -> matieres."""
+def scanner_arorescence(chemin_niveau: Path):
     arbo = {}
     if not chemin_niveau.exists():
+        print(f"DEBUG: Dossier introuvable -> {chemin_niveau}") # Aide au débogage
         return arbo
+   
     for semestre_dir in sorted(chemin_niveau.iterdir()):
-        if not semestre_dir.is_dir():
-            continue
-        arbo[semestre_dir.name] = {}
-        for session_dir in sorted(semestre_dir.iterdir()):
-            if not session_dir.is_dir():
-                continue
-            matieres = []
-            for matiere_dir in sorted(session_dir.iterdir()):
-                if matiere_dir.is_dir():
-                    fichiers = [f.name for f in matiere_dir.iterdir() if f.suffix == ".pdf"]
-                    matieres.append({"nom": matiere_dir.name, "fichiers": fichiers})
-            arbo[semestre_dir.name][session_dir.name] = matieres
+        if semestre_dir.is_dir():
+            arbo[semestre_dir.name] = {}
+            for session_dir in sorted(semestre_dir.iterdir()):
+                if session_dir.is_dir():
+                    matieres = []
+                    for matiere_dir in sorted(session_dir.iterdir()):
+                        if matiere_dir.is_dir():
+                            # Ici, on force la recherche des .pdf en ignorant la casse (.PDF ou .pdf)
+                            fichiers = [f.name for f in matiere_dir.iterdir() if f.suffix.lower() == ".pdf"]
+                            matieres.append({"nom": matiere_dir.name, "fichiers": fichiers})
+                    arbo[semestre_dir.name][session_dir.name] = matieres
     return arbo
 
 
