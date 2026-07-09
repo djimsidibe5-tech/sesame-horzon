@@ -90,16 +90,16 @@ async def page_niveau(request: Request, niveau_slug: str):
     niveau = get_niveau_by_slug(niveau_slug)
     if niveau is None:
         return templates.TemplateResponse("404.html", {"request": request}, status_code=404)
+    arbo = scanner_arborescence(DOCS_ROOT / niveau_slug)
+    return templates.TemplateResponse("niveau.html", {"request": request, "niveau": niveau, "arbo": arbo})
+
 @app.get("/confidentialite")
 async def confidentialite(request: Request):
     return templates.TemplateResponse("confidentialite.html", {"request": request})
+
 @app.get("/apropos")
 async def apropos(request: Request):
     return templates.TemplateResponse("apropos.html", {"request": request})
-
-    arbo = scanner_arborescence(DOCS_ROOT / niveau_slug)
-    return templates.TemplateResponse( "niveau.html", {"request": request, "niveau": niveau, "arbo": arbo},  )
-
 # --- Page d'une matière (sujet + corrigé) ---
 @app.get( "/matiere/{niveau_slug}/{semestre}/{session}/{matiere_nom}", name="matiere",   response_class=HTMLResponse)
 async def matiere(request: Request, niveau_slug: str, semestre: str, session: str, matiere_nom: str):
