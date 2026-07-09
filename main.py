@@ -37,7 +37,7 @@ def get_niveau_by_slug(slug):
     return next((n for n in NIVEAUX if n.slug == slug), None)
 
 
-def scanner_arorescence(chemin_niveau: Path):
+def scanner_arborescence(chemin_niveau: Path):
     arbo = {}
     if not chemin_niveau.exists():
         print(f"DEBUG: Dossier introuvable -> {chemin_niveau}") # Aide au débogage
