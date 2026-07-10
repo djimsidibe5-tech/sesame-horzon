@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pathlib import Path
 
-app = FastAPI(title="Sésame Horizon - Portail Officiel")
+app = FastAPI(title="L'HORIZON DES TECHNOCRATES - Portail Officiel")
 
 # Montage des fichiers statiques et templates
 app.mount("/static", StaticFiles(directory="sesame-tech/static"), name="static")
@@ -26,10 +26,10 @@ class Niveau:
 
 NIVEAUX = [
     Niveau("L1", "Licence 1", ["S1", "S2"]),
-    Niveau("L2", "Licence 2", ["S3", "S4"]),
-    Niveau("L3", "Licence 3", ["S5", "S6"]),
+    Niveau("L2", "Licence 2", ["S1", "S2"]),
+    Niveau("L3", "Licence 3", ["S1", "S2"]),
     Niveau("M1", "Master 1", ["S1", "S2"]),
-    Niveau("M2", "Master 2", ["S3", "S4"]),
+    Niveau("M2", "Master 2", ["S1", "S2"]),
 ]
 
 
@@ -64,7 +64,7 @@ biographie = {
     "nationalite": "Ivoirien",
     "niveau": "Licence 3 Sciences Physiques",
     "parcours": "Baccalauréat Série C obtenu en 2024",
-    "description": "Étudiant passionné par la physique et le développement web, créateur de la plateforme Sésame Horizon pour soutenir les étudiants.",
+    "description": "Étudiant passionné par la physique et le développement web, créateur de la plateforme l'horizon des technocrates pour soutenir les étudiants.",
 }
 
 
