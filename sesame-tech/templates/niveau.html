@@ -10,36 +10,50 @@
 <section class="entete-niveau">
   <p class="eyebrow">Niveau</p>
   <h1>{{ niveau.nom }} <span class="accent-physique">— Sciences Physiques</span></h1>
+  <p class="hero-text">{{ niveau.description }}</p>
 </section>
 
-{% for semestre_nom, sessions in arbo.items() %}
-<section class="bloc-semestre">
+{% if arbo %}
+  {% for semestre_nom, sessions in arbo.items() %}
+  <section class="bloc-semestre">
     <h2 class="titre-semestre">{{ semestre_nom }}</h2>
-    
+
     <div class="grille-sessions">
-        {% for session_nom, matieres in sessions.items() %}
-        <div class="bloc-session">
-            <h3 class="titre-session">{{ session_nom }}</h3>
-            
-            {% if matieres %}
-            <ul class="liste-materes">
-                {% for m in matieres %}
-                <li>
-                    <a href="{{ url_for('matiere', niveau_slug=niveau.slug, semestre=semestre_nom, session=session_nom, matiere_nom=m.nom) }}">
-                        <span class="matiere-nom">{{ m.nom }}</span>
-                        <span class="matiere-nb">
-                            {{ m.fichiers|length }} fichier{{ 's' if m.fichiers|length != 1 else '' }}
-                        </span>
-                    </a>
-                </li>
-                {% endfor %}
-            </ul>
-            {% else %}
-            <p class="etat-vide">Aucune matière déposée pour l'instant dans cette session.</p>
-            {% endif %}
-        </div>
-        {% endfor %}
+      {% for session_nom, matieres in sessions.items() %}
+      <div class="bloc-session">
+        <h3 class="titre-session">{{ session_nom | replace('session', 'Session ') }}</h3>
+
+        {% if matieres %}
+          <ul class="liste-matieres">
+            {% for m in matieres %}
+            <li>
+              <a href="{{ url_for('matiere', niveau_slug=niveau.slug, semestre=semestre_nom, session=session_nom, matiere_nom=m.nom) }}">
+                <span class="matiere-nom">{{ m.nom }}</span>
+                <span class="matiere-nb">{{ m.fichiers | length }} fichier{{ 's' if m.fichiers | length != 1 else '' }}</span>
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="etat-vide">Aucune matière déposée pour l'instant dans cette session.</p>
+        {% endif %}
+      </div>
+      {% endfor %}
     </div>
+  </section>
+  {% endfor %}
+{% else %}
+  <p class="etat-vide-grand">Le contenu de ce niveau est en cours de préparation.</p>
+{% endif %}
+
+<section class="contenu-editorial">
+  <h2 class="titre-section">Comment réviser efficacement en {{ niveau.nom }}</h2>
+  <p>
+    Chaque matière regroupe les sujets d'examen des sessions précédentes accompagnés de leurs corrigés.
+    La meilleure méthode : traite d'abord le sujet seul, en conditions d'examen, puis compare ta
+    démarche avec le corrigé pour identifier les points à retravailler. Recommence sur plusieurs
+    sessions pour repérer les notions qui reviennent le plus souvent.
+  </p>
 </section>
-{% endfor %}
+
 {% endblock %}
