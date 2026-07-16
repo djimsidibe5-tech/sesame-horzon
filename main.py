@@ -18,25 +18,31 @@ DOCS_ROOT = BASE_DIR / "sesame-tech" / "static" / "documents"
 
 # --- Définition des niveaux (Licence 1 -> Master 2) ---
 class Niveau:
-    def __init__(self, slug, nom, semestres):
+    def __init__(self, slug, nom, semestres, description):
         self.slug = slug
         self.nom = nom
-        self.semestres = semestres  # liste de strings, ex: ["S1", "S2"]
-
+        self.semestres = semestres
+        self.description = description
 
 NIVEAUX = [
-    Niveau("L1", "Licence 1", ["S1", "S2"]),
-    Niveau("L2", "Licence 2", ["S1", "S2"]),
-    Niveau("L3", "Licence 3", ["S1", "S2"]),
-    Niveau("M1", "Master 1", ["S1", "S2"]),
-    Niveau("M2", "Master 2", ["S1", "S2"]),
+    Niveau("L1", "Licence 1", ["S1", "S2"],
+        "La première année pose les bases : algèbre, analyse, mécanique du point, "
+        "électrocinétique et chimie générale. C'est le socle sur lequel repose tout le reste du cursus."),
+    Niveau("L2", "Licence 2", ["S1", "S2"],
+        "En Licence 2, la mécanique se complexifie (dynamique des systèmes, oscillateurs) "
+        "et l'électromagnétisme entre en scène aux côtés de la thermodynamique."),
+    Niveau("L3", "Licence 3", ["S1", "S2"],
+        "Dernière année de licence : équations de Maxwell, électrochimie approfondie, "
+        "mécanique quantique introductive. Le niveau charnière avant les concours et le master."),
+    Niveau("M1", "Master 1", ["S1", "S2"],
+        "Spécialisation en physique appliquée et méthodes numériques, avec des sujets "
+        "d'examen plus proches de la recherche et de l'ingénierie."),
+    Niveau("M2", "Master 2", ["S1", "S2"],
+        "Dernière ligne droite : projets, mémoire et sujets d'approfondissement "
+        "pour les étudiants qui se dirigent vers la recherche ou l'enseignement."),
 ]
-
-
 def get_niveau_by_slug(slug):
     return next((n for n in NIVEAUX if n.slug == slug), None)
-
-
 def scanner_arborescence(chemin_niveau: Path):
     arbo = {}
     if not chemin_niveau.exists():
