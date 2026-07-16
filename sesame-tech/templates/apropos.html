@@ -1,15 +1,55 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <title>À propos — l'horizon des Technocrates</title>
-</head>
-<body>
-  <h1>À propos de l'horizon des Technocrates</h1>
-  <p>l'horizon des Technocrates est une bibliothèque d'annales et de ressources académiques destinée aux étudiants, couvrant les niveaux de Licence (L1 à L3) et de Master (M1, M2).</p>
-  <p>L'objectif de ce site est de faciliter l'accès aux annales d'examens pour aider les étudiants dans leur préparation.</p>
+{% extends "base.html" %}
+{% block titre %}À propos — l'horizon des Technocrates{% endblock %}
 
-  <h2>+2250710090972</h2>
-  <p>Pour toute question, suggestion ou signalement, contactez-nous à : [djimsidibe5@gmail.com]</p>
-</body>
-</html>
+{% block contenu %}
+
+<section class="fil-ariane">
+  <a href="{{ url_for('index') }}">Bibliothèque</a> <span>/</span> <span>À propos</span>
+</section>
+
+<section class="entete-niveau">
+  <p class="eyebrow">À propos</p>
+  <h1>L'histoire derrière <span class="accent-physique">l'horizon des Technocrates</span></h1>
+  <p class="hero-text">
+    Un projet né sur les bancs de la Licence, pour répondre à un besoin très concret :
+    retrouver facilement les sujets et corrigés d'examens en Sciences Physiques.
+  </p>
+</section>
+
+<section class="contenu-editorial">
+  <h2 class="titre-section">Pourquoi ce site existe</h2>
+  <p>
+    À l'Université Polytechnique de Man, comme dans beaucoup d'établissements, les annales
+    d'examens circulent de manière informelle : groupes WhatsApp, clés USB échangées entre
+    camarades, photos de copies partagées au dernier moment avant un partiel. Cette dispersion
+    rend les révisions difficiles, surtout pour les étudiants qui n'ont pas accès aux bons réseaux.
+  </p>
+  <p>
+    L'horizon des Technocrates est né de la volonté de centraliser ces ressources en un seul
+    endroit, organisé par niveau, semestre et session, pour que chaque étudiant en Sciences
+    Physiques — de la Licence 1 au Master 2 — puisse réviser sereinement.
+  </p>
+
+  <h2 class="titre-section">Le créateur</h2>
+  <p>
+    Le site est conçu et maintenu par <strong>{{ bio.nom }}</strong>, étudiant en
+    {{ bio.niveau }}, {{ bio.parcours }}. {{ bio.description }}
+  </p>
+
+  <h2 class="titre-section">Comment le contenu est ajouté</h2>
+  <p>
+    Les sujets et corrigés proviennent de plusieurs sources : archives personnelles,
+    contributions d'étudiants et d'enseignants, et numérisation progressive des annales
+    disponibles à l'université. Le site est mis à jour régulièrement à mesure que de
+    nouveaux documents sont collectés et vérifiés.
+  </p>
+
+  <h2 class="titre-section">Une question, une suggestion ?</h2>
+  <p>
+    Ce projet est encore jeune et continue de s'enrichir. Si tu constates une erreur dans
+    un document, une matière manquante, ou si tu souhaites contribuer avec tes propres
+    annales, n'hésite pas à me contacter.
+  </p>
+</section>
+
+{% endblock %}
