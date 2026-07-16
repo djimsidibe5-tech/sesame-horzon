@@ -12,6 +12,12 @@
 <section class="entete-matiere">
   <p class="eyebrow">{{ niveau.nom }} · {{ semestre_slug | replace('-', ' ') | title }} · {{ session_slug | replace('-', ' ') | title }}</p>
   <h1>{{ matiere_nom }}</h1>
+  <p class="hero-text">
+  Retrouve ici les sujets d'examen et corrigés d'{{ matiere_nom }} pour la session
+  {{ session_slug | replace('session', '') }} du {{ semestre_slug }} en {{ niveau.nom }}.
+  Travaille d'abord le sujet en conditions réelles avant de consulter le corrigé —
+  c'est la méthode la plus efficace pour progresser.
+</p>
 </section>
 
 <section class="liste-fichiers-section">
