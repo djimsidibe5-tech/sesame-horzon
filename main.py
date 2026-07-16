@@ -143,7 +143,9 @@ async def telecharger(niveau: str, semestre: str, session: str, matiere: str, no
     if chemin_fichier.exists() and chemin_fichier.suffix == ".pdf":
         return FileResponse(chemin_fichier, media_type="application/pdf", filename=nom_fichier)
     return {"error": "Ce document n'existe pas encore."}
-
+@app.get("/ads.txt", response_class=HTMLResponse)
+async def ads_txt():
+    return HTMLResponse("google.com, ca-pub-9975210995819823, DIRECT, f08c47fec0942fa0", media_type="text/plain")
 
 @app.get("/ressources", name="ressources", response_class=HTMLResponse)
 async def ressources(request: Request):
