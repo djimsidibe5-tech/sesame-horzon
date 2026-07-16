@@ -26,15 +26,15 @@
       {% endfor %}
     </ul>
   {% else %}
-    <div class="etat-vide-grand">
-      <p>Aucun document n'a encore été déposé pour cette matière.</p>
-      <p class="etat-vide-detail">
-        Ajoute des fichiers dans
-        <code>static/documents/{{ niveau.slug }}/{{ semestre_slug }}/{{ session_slug }}/{{ matiere_slug }}/</code>
-        pour qu'ils apparaissent automatiquement ici.
-      </p>
-    </div>
-  {% endif %}
+  <div class="etat-vide-grand">
+    <p>Aucun document n'a encore été déposé pour cette matière.</p>
+    <p class="etat-vide-detail">
+      Ajoute des fichiers dans
+      <code>static/documents/{{ niveau.slug }}/{{ semestre_slug }}/{{ session_slug }}/{{ matiere_nom }}/</code>
+      pour qu'ils apparaissent automatiquement ici.
+    </p>
+  </div>
+{% endif %}
 </section>
 
 {% endblock %}
