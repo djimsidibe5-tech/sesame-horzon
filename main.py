@@ -99,7 +99,7 @@ async def confidentialite(request: Request):
 
 @app.get("/apropos")
 async def apropos(request: Request):
-    return templates.TemplateResponse("apropos.html", {"request": request})
+    return templates.TemplateResponse("apropos.html", {"request":request,"bio": biographie})
 # --- Page d'une matière (sujet + corrigé) ---
 @app.get( "/matiere/{niveau_slug}/{semestre}/{session}/{matiere_nom}", name="matiere",   response_class=HTMLResponse)
 async def matiere(request: Request, niveau_slug: str, semestre: str, session: str, matiere_nom: str):
